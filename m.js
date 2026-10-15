@@ -178,7 +178,7 @@
     MXSkin_noAcc: "Account does not exist.",
   };
   const langLB = {
-    title: "HELLZ",
+    title: "ONYX",
   };
   const langHUD = {
     enterChatMsg: "Enter chat message...",
@@ -543,7 +543,7 @@
     static ["saveSettings"](mb, fz) {
       this[mb] = fz;
       if ("multiboxMode" === mb) {
-        Notifications.alert("HELLZ", "Please rejoin the server!");
+        Notifications.alert("ONYX", "Please rejoin the server!");
       }
       if ("chatType" === mb) {
         this.toggleChatroom();
@@ -759,7 +759,7 @@
     static ["setNick"](jl) {
       if (Player.isAlive) {
         $("#nick").val(Player.nick);
-        Notifications.alert("HELLZ", Language.current.notif.nickChangeInGame);
+        Notifications.alert("ONYX", Language.current.notif.nickChangeInGame);
       }
       let ht = Storage.get("profiles", "profile" + this.selected);
       const o = {
@@ -1497,7 +1497,7 @@
       ChatInput.enter(qk);
     }
     static ["command"](xz) {
-      let mc = 9 === xz ? "HELLZ by S" : Commands["command" + xz];
+      let mc = 9 === xz ? "ONYX by S" : Commands["command" + xz];
       if (0 <= mc.indexOf("%sector%")) {
         const uv = WorldData.getLocation(Camera.x, Camera.y);
         mc = mc.replace("%sector%", uv);
@@ -1633,7 +1633,7 @@
           this.restartTimes[fq] = lp ? Date.parse(lp) : null;
         });
       } catch (zi) {
-        Notifications.warn("HELLZ", "Unexpected error occured while parsing servers info.");
+        Notifications.warn("ONYX", "Unexpected error occured while parsing servers info.");
         throw zi;
       }
       return [abp, aco];
@@ -2416,7 +2416,7 @@
     static ["shouldShow"](prefix, msg, src) {
       if ("game" === src) return true;
       if ("Level" === prefix) return true;
-      if ("HELLZ" === prefix && ("by S" === msg || /^Tab [12] connected$/.test(msg))) return true;
+      if (("HELLZ" === prefix || "ONYX" === prefix) && ("by S" === msg || /^Tab [12] connected$/.test(msg))) return true;
       return false;
     }
     static ["normal"](gz, ady, xo = "system") {
@@ -2515,7 +2515,7 @@
         });
       }
       if (/welcome to 3rb\.io/i.test(zf)) {
-        this.alert("HELLZ", "by S", "system", "hellz-signature");
+        this.alert("ONYX", "by S", "system", "hellz-signature");
       }
     }
     static ["partyInvite"](dg, zf, ais) {
@@ -3808,7 +3808,7 @@
       
       return "XXXXXXX" !== acy
         ? ((this.isRGB = pj), (this._skin = acy))
-        : void Notifications.alert("HELLZ", Language.current.notif.invalidSkinUrl);
+        : void Notifications.alert("ONYX", Language.current.notif.invalidSkinUrl);
     }
     static get ["skin"]() {
       return this._skin;
@@ -3820,7 +3820,7 @@
       
       if ("XXXXXXX" === acy) {
         if (dn) {
-          return void Notifications.alert("HELLZ", Language.current.notif.invalidSkinUrl);
+          return void Notifications.alert("ONYX", Language.current.notif.invalidSkinUrl);
         }
         this._skin2 = "";
       } else {
@@ -4814,7 +4814,7 @@
       });
       if (acl) {
         if (acl.isUnnamed) {
-          Notifications.alert("HELLZ", Language.current.notif.target_unnamed);
+          Notifications.alert("ONYX", Language.current.notif.target_unnamed);
         } else {
           const ou = this[1 === us ? "target1" : "target2"];
           ou.turnedOn = true;
@@ -5187,7 +5187,7 @@
         const lv = value => { clearTimeout(timer); resolve(value); };
         const dq = error => { clearTimeout(timer); reject(error); };
         if (alq <= 1) {
-          Notifications.warn("HELLZ", "Solving captcha, please wait..");
+          Notifications.warn("ONYX", "Solving captcha, please wait..");
         }
         
         this.pendingResolvers[alq] = { resolve: lv, reject: dq };
@@ -5223,14 +5223,14 @@
               callback: (xs) => {
                 const rz = this.pendingResolvers[alq];
                 if (!xs) {
-                  return Notifications.warn("HELLZ", "Unexpected response from Turnstile API.");
+                  return Notifications.warn("ONYX", "Unexpected response from Turnstile API.");
                 }
                 const ls = document.getElementById("loading-screen");
                 if (ls) {
                   window.HELLZLoading?.set(92, "Verification complete");
                 }
                 PacketSender.handleDisabledProperty(false);
-                Notifications.warn("HELLZ", "Captcha solved for Tab " + alq);
+                Notifications.warn("ONYX", "Captcha solved for Tab " + alq);
                 if (rz) {
                   return rz.resolve(xs);
                 }
@@ -5271,7 +5271,7 @@
     }
     static ["connect"](hy, aff) {
       if ("string" != typeof hy) {
-        return Notifications.warn("HELLZ", "Server IP is invalid");
+        return Notifications.warn("ONYX", "Server IP is invalid");
       }
       if (!hy) return;
       const go = () => {
@@ -5320,7 +5320,7 @@
         if (!Account.loginStringFor(1) || !Account.loginStringFor(2)) {
           if (!this.tab2WarnedGuest) {
             this.tab2WarnedGuest = true;
-            Notifications.warn("HELLZ", "Tab 2 paused: a separate authenticated account is required. Tab 1 remains active.");
+            Notifications.warn("ONYX", "Tab 2 paused: a separate authenticated account is required. Tab 1 remains active.");
           }
           this.tab2Queued = false;
           return;
@@ -5338,7 +5338,7 @@
       this.tab2Queued = false;
       if (this.intentionalDisconnect || !this.ip || this.policyBlocked) return;
       if (!Account.loginStringFor(2) && 3 <= (this.tab2GuestKicks || 0)) {
-        Notifications.warn("HELLZ", "Tab 2 keeps getting kicked as guest - log in with a second account to keep Tab 2 alive.");
+        Notifications.warn("ONYX", "Tab 2 keeps getting kicked as guest - log in with a second account to keep Tab 2 alive.");
         return;
       }
       this.queueTab2();
@@ -5478,7 +5478,7 @@
       
       this.shieldHello(nq);
       PacketSender.init(nq);
-      if (3 !== nq) Notifications.alert("HELLZ", "Tab " + nq + " connected");
+      if (3 !== nq) Notifications.alert("ONYX", "Tab " + nq + " connected");
     }
     static ["onMessage"](alh, adu) {
 this.packetCount["in"]++;
@@ -5566,7 +5566,7 @@ this.packetCount["in"]++;
         this.policyBlocked = true;
         this.tab2Gen = (this.tab2Gen || 0) + 1;
         this.tab2Queued = false;
-        Notifications.warn("HELLZ", "Server replaced Tab " + numericTab + ". Automatic reconnection paused to prevent a disconnect loop. Close duplicate tabs/bots and reconnect manually.");
+        Notifications.warn("ONYX", "Server replaced Tab " + numericTab + ". Automatic reconnection paused to prevent a disconnect loop. Close duplicate tabs/bots and reconnect manually.");
       }
       if (numericTab === 1) {
         this.ws = null;
@@ -5578,7 +5578,7 @@ this.packetCount["in"]++;
       }
       this.resetShield(numericTab);
       PacketParser.clearCells(numericTab);
-      Notifications.alert("HELLZ", "Tab " + numericTab + " disconnected");
+      Notifications.alert("ONYX", "Tab " + numericTab + " disconnected");
       console.log("Websocket " + numericTab + " closed" + (reason ? " (" + reason + ")" : ""));
       if (!replaced && !this.policyBlocked && 1 === numericTab) {
         setTimeout(() => {
@@ -5588,7 +5588,7 @@ this.packetCount["in"]++;
       } else if (!replaced && !this.policyBlocked && 2 === numericTab) {
         // Do not repeatedly attempt a secondary connection after a server rejection.
         this.tab2Queued = false;
-        Notifications.warn("HELLZ", "Tab 2 disconnected. Reconnect it manually after checking server/account limits.");
+        Notifications.warn("ONYX", "Tab 2 disconnected. Reconnect it manually after checking server/account limits.");
       }
       if (!(this.wsOpen || this.ws2Open)) {
         MainMenu.open();
@@ -5653,7 +5653,7 @@ this.packetCount["in"]++;
       const tab = Number(Player.typeID || 1);
       const alive = tab === 2 ? Player._isAlive2 : Player._isAlive;
       if (!alive) {
-        Notifications.warn("HELLZ", "Tab " + tab + " is not alive.");
+        Notifications.warn("ONYX", "Tab " + tab + " is not alive.");
         return false;
       }
       if (this.recycleLocks.has(tab)) return false;
@@ -5683,7 +5683,7 @@ this.packetCount["in"]++;
         hud = document.createElement("div");
         hud.id = "hellz-connection-status";
         hud.style.cssText = "position:fixed;right:5px;z-index:2147483000;text-align:center;font-family:ubuntu,sans-serif;font-size:11px;color:rgba(255,255,255,.75);pointer-events:none;white-space:nowrap;text-shadow:0 1px 2px #000;padding-bottom:3px";
-        hud.title = "HELLZ Multibox - Tab 1 and Tab 2 connection status.";
+        hud.title = "ONYX Multibox - Tab 1 and Tab 2 connection status.";
         document.body.appendChild(hud);
       }
       if (hud) {
@@ -5729,7 +5729,7 @@ this.packetCount["in"]++;
         const ajb = this.messages.get(gf);
         if ((ajb == dm && dm.length >= 30) || (ajb.length >= 30 && dm.length >= 30)) {
           this.spammers.push(gf);
-          Notifications.alert("HELLZ", "Spammer Catched -> " + gf);
+          Notifications.alert("ONYX", "Spammer Catched -> " + gf);
           return true;
         }
       } else if (dm.length >= 30) {
@@ -6224,7 +6224,7 @@ this.packetCount["in"]++;
         add = await WsConnection.getToken(oq);
       } catch (nb) {
         console.log("Multibox: failed to get captcha token for tab " + oq + ":", nb);
-        Notifications.warn("HELLZ", "Captcha failed for Tab " + oq + " - retrying the connection.");
+        Notifications.warn("ONYX", "Captcha failed for Tab " + oq + " - retrying the connection.");
         return false;
       }
       var fj = new DataView(new ArrayBuffer(add.length + 6));
