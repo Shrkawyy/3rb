@@ -83,10 +83,6 @@
     spawn(){
       if(!this.clientReady||this.isAlive||Date.now()-(this.lastSpawn||0)<2000)return;
       this.lastSpawn=Date.now();
-      // Set initial movement target before requesting spawn; actual spawn remains server-selected.
-      const target=window.HELLZBots?.target;
-      if(target&&Number.isFinite(target.x)&&Number.isFinite(target.y)) this.cursor(target.x,target.y);
-      else if(window.HELLZGame?.Player?.isAlive) this.cursor(window.HELLZGame.Player.x,window.HELLZGame.Player.y);
       const encoded=unescape(encodeURIComponent(this.name));
       const json=JSON.stringify({n:encoded});const p=new Uint8Array(json.length+2);
       for(let i=0;i<json.length;i++)p[i+1]=json.charCodeAt(i);this.send(p,1);this.state='Spawn requested';
@@ -329,22 +325,12 @@
   const style=document.createElement('style');style.textContent=`
   #hellz-bots{position:fixed;right:16px;top:90px;z-index:8000000;width:290px;border:1px solid #39505f;background:#101720f2;color:#dcebf4;border-radius:12px;font:12px Arial;box-shadow:0 10px 40px #0009;overflow:hidden}
   #hellz-bots header{display:flex;justify-content:space-between;padding:14px 16px;background:#182431;letter-spacing:2px;color:#82dcec}#hellz-bots button{background:#233848;border:1px solid #426070;color:#dff6ff;border-radius:5px;padding:7px 10px;cursor:pointer}#hellz-bots button:disabled{opacity:.5;cursor:wait}#hellz-bots .hz-controls{padding:14px}#hellz-bots input,#hellz-bots select{background:#0b121b;color:#dff6ff;border:1px solid #364d5e;padding:7px;max-width:130px;border-radius:4px}#hellz-bots label{display:flex;align-items:center;justify-content:space-between;margin:10px 0;gap:8px}#hellz-bots .hz-actions{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}#hellz-bots .hz-list{max-height:150px;overflow:auto;font:11px monospace;line-height:1.7;color:#a8becb}#hellz-bots .hz-list div{border-top:1px solid #ffffff0d;padding:5px 0}#hellz-bots small{display:block;color:#8096a8;line-height:1.6}`;
-  style.textContent += `
-  #hellz-bots{background:#151419f5;border:1px solid #765725;box-shadow:0 14px 44px #000c,0 0 20px #aa780c17;color:#e7e1d7;font-family:Arial,sans-serif;min-width:285px}
-  #hellz-bots header{background:linear-gradient(115deg,#17151b,#252028);border-bottom:1px solid #715326;color:#e9b744}
-  #hellz-bots button{background:#252128;border:1px solid #69512f;color:#e6d7ba}
-  #hellz-bots button:hover{border-color:#e5b44b;background:#38303a}
-  #hellz-bots input,#hellz-bots select{background:#101016;border-color:#57452c;color:#f6ecd6}
-  #hellz-bots .hz-list{color:#cdbb9d}
-  `;
   document.head.appendChild(style);
-  const root=document.createElement('section');root.id='hellz-bots';root.innerHTML=`<header><strong>HELLZ BOTS</strong><button id="hz-collapse" aria-label="Toggle bot panel">−</button></header><div class="hz-controls"><small>by S · native 3rb transport</small><label>Name<input id="hz-botname" value="ONYX" maxlength="24"></label><label>Count<input id="hz-count" type="number" min="1" max="100" value="1"></label><label>Follow<select id="hz-follow"><option value="mouse">Mouse</option><option value="player" selected>Player</option><option value="off">Off</option></select></label><label>Auto spawn / respawn<input id="hz-respawn" type="checkbox" checked></label><label>Auto split<input id="hz-split-auto" type="checkbox"></label><div class="hz-actions"><button id="hz-connect">Connect</button><button id="hz-stop">Stop all</button></div><div class="hz-actions"><button id="hz-spawn">Spawn</button><button id="hz-split">Split</button><button id="hz-feed">Feed</button></div><small id="hz-summary">No bots connected</small><small id="hz-target-status">MultiSpectate: choose Mouse → Right click → MultiSpectate</small><div class="hz-list"></div><small>Each connection requires server acceptance and normal verification. Spawn location is chosen by the server.</small></div>`;
-  root.querySelector('header strong').textContent='ONYX BOTS';
+  const root=document.createElement('section');root.id='hellz-bots';root.innerHTML=`<header><strong>HELLZ BOTS</strong><button id="hz-collapse" aria-label="Toggle bot panel">−</button></header><div class="hz-controls"><small>by S · native 3rb transport</small><label>Name<input id="hz-botname" value="HELLZ" maxlength="24"></label><label>Count<input id="hz-count" type="number" min="1" max="10" value="1"></label><label>Follow<select id="hz-follow"><option value="mouse">Mouse</option><option value="player">Player</option><option value="off">Off</option></select></label><label>Auto spawn / respawn<input id="hz-respawn" type="checkbox" checked></label><label>Auto split<input id="hz-split-auto" type="checkbox"></label><div class="hz-actions"><button id="hz-connect">Connect</button><button id="hz-stop">Stop all</button></div><div class="hz-actions"><button id="hz-spawn">Spawn</button><button id="hz-split">Split</button><button id="hz-feed">Feed</button></div><small id="hz-summary">No bots connected</small><div class="hz-list"></div><small>Each connection requires server acceptance and normal verification. Spawn location is chosen by the server.</small></div>`;
   document.body.appendChild(root);const $=id=>root.querySelector('#'+id);
   for(const e of ['mousedown','mouseup','wheel','keydown','keyup','click','dblclick'])root.addEventListener(e,event=>event.stopPropagation());
-  $('hz-collapse').onclick=()=>{const body=root.querySelector('.hz-controls');const hidden=body.hidden;body.hidden=!hidden;$('hz-collapse').textContent=hidden?'−':'+';};
+  $('hz-collapse').onclick=()=>{const body=root.querySelector('.hz-controls');body.hidden=!body.hidden;$('hz-collapse').textContent=body.hidden?'+':'−';};
   const stop=()=>{manager.generation++;manager.connecting=false;$('hz-connect').disabled=false;manager.bots.forEach(b=>b.stop());};
-  $('hz-count').addEventListener('change',()=>{const n=Math.min(100,Math.max(1,Math.floor(Number($('hz-count').value)||1)));$('hz-count').value=String(n);});
   $('hz-stop').onclick=stop;
   $('hz-connect').onclick=async()=>{
     const url=G.WsConnection.ip;
@@ -352,16 +338,12 @@
     if(manager.connecting)return;
     manager.connecting=true;$('hz-connect').disabled=true;const generation=++manager.generation;
     manager.bots=manager.bots.filter(b=>!b.closed);
-    const requested=Math.min(100,Math.max(1,Math.floor(Number($('hz-count').value)||1)));
-    $('hz-count').value=String(requested);
-    const count=Math.min(100-manager.bots.length,requested);
+    const count=Math.min(10-manager.bots.length,Math.max(1,Number($('hz-count').value)||1));
     for(let i=0;i<count&&generation===manager.generation;i++){
-      const bot=new Bot(($('hz-botname').value||'ONYX')+' '+(manager.bots.length+1));manager.bots.push(bot);bot.connect(url);
+      const bot=new Bot(($('hz-botname').value||'HELLZ')+' '+(manager.bots.length+1));manager.bots.push(bot);bot.connect(url);
       // Serialize challenges and stop the batch after a rejected connection.
       while(!bot.clientReady&&!bot.closed&&generation===manager.generation)await new Promise(r=>setTimeout(r,250));
       if(bot.closed)break;
-      // Pace accepted connections rather than opening a burst of sockets.
-      await new Promise(r=>setTimeout(r,500));
     }
     if(generation===manager.generation){manager.connecting=false;$('hz-connect').disabled=false;}
   };
@@ -376,9 +358,7 @@
       if(b.ip!==current){b.stop('Server changed');continue;}
       if($('hz-respawn').checked)b.spawn();
       const follow=$('hz-follow').value;
-      if(G.Mouse?.rightClick==='multiSpectate') {
-        if(manager.target)b.cursor(manager.target.x,manager.target.y);
-      } else if(follow==='mouse')b.cursor(G.Mouse.canvasX,G.Mouse.canvasY);
+      if(follow==='mouse')b.cursor(G.Mouse.canvasX,G.Mouse.canvasY);
       else if(follow==='player'&&G.Player.isAlive)b.cursor(G.Player.x,G.Player.y);
       if($('hz-split-auto').checked&&step%5===0)b.split();
     }

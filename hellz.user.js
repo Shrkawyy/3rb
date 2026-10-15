@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         ONYX 3RB — HELLZ transport
-// @namespace    onyx-hellz-3rb
-// @version      3.2.0
+// @name         HELLZ — by S
+// @namespace    hellz-3rb
+// @version      2.1.0
 // @author       HELLZ
 // @match        *://3rb.io/*
 // @match        *://www.3rb.io/*
@@ -18,7 +18,7 @@
   if (location.pathname !== '/') return;
   window.stop();
   document.open();
-  document.write('<!doctype html><html><head><title>ONYX — 3rb.io</title></head><body style="margin:0;background:#080b12;color:#b9efff;display:grid;place-items:center;height:100vh;font:24px Arial"><div style="text-align:center;letter-spacing:8px">ONYX<div style="font-size:12px;color:#e9ac76;margin-top:12px">by S</div></div></body></html>');
+  document.write('<!doctype html><html><head><title>HELLZ — by S</title></head><body style="margin:0;background:#080b12;color:#b9efff;display:grid;place-items:center;height:100vh;font:24px Arial"><div style="text-align:center;letter-spacing:8px">HELLZ<div style="font-size:12px;color:#e9ac76;margin-top:12px">by S</div></div></body></html>');
   document.close();
   const fail = message => {
     const box = document.createElement('pre');
@@ -31,12 +31,12 @@
       new Function('GM_xmlhttpRequest','GM_getValue','GM_setValue','unsafeWindow',code)(GM_xmlhttpRequest,GM_getValue,GM_setValue,unsafeWindow);
     } catch(error) { fail(error.message); }
   };
-  const key='onyx-launcher-3.2.0';
+  const key='hellz-launcher-2.1.0';
   const cached=GM_getValue(key,null);
   if(cached && Date.now()-cached.saved<300000){launch(cached.code);return;}
   GM_xmlhttpRequest({
     method:'GET',
-    url:'https://3rbio-sigma.vercel.app/launcher.js?release=3.2.0',
+    url:'https://3rbio-sigma.vercel.app/launcher.js?release=2.1.0',
     timeout:20000,
     onload(r){
       if(r.status!==200 || /^\s*</.test(r.responseText||'')){
