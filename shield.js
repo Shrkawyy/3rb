@@ -438,9 +438,11 @@
       if (!r.ok) throw new Error("page fetch failed " + r.status);
       return r.text();
     }).then(function (html) {
+      var modern = html.match(/js\/dist\/bundle\.([a-f0-9]+)\.js/);
+      if (modern) return "bundle." + modern[1] + ".js";
       var m = html.match(/js\/dist\/bundle\.js\?v=([a-f0-9]+)/);
       if (!m) throw new Error("bundle version not found in page");
-      return m[1];
+      return "bundle.js?v=" + m[1];
     });
   }
   function discoverWasmUrl(v) {
@@ -448,13 +450,13 @@
       var cached = localStorage.getItem("dragplus_wasm_" + v);
       if (cached) return Promise.resolve(cached);
     } catch (e) {}
-    return fetch("https://3rb.io/js/dist/bundle.js?v=" + v)
+    return fetch("https://3rb.io/js/dist/" + v)
       .then(function (r) {
         if (!r.ok) throw new Error("bundle fetch failed " + r.status);
         return r.text();
       })
       .then(function (text) {
-        var m = text.match(/893:"([a-f0-9]+)"/);
+        var m = text.match(/893\s*:\s*"([a-f0-9]+)"/);
         if (!m) throw new Error("shield chunk not found in bundle");
         return fetch("https://3rb.io/js/dist/893." + m[1] + ".bundle.js").then(function (r) {
           if (!r.ok) throw new Error("chunk fetch failed " + r.status);
@@ -478,11 +480,11 @@
   
   var ready = loadWasmDynamic()
     .catch(function (e) {
-      console.warn("[Drag+] live shield discovery failed (" + (e && e.message) + "), trying hardcoded wasm");
+      console.warn("[HELLZ] live shield discovery failed (" + (e && e.message) + "), trying hardcoded wasm");
       return loadWasm(WASM_PRIMARY);
     })
     .catch(function () {
-      console.warn("[Drag+] hardcoded wasm failed, trying GitHub fallback");
+      console.warn("[HELLZ] hardcoded wasm failed, trying fallback");
       return loadWasm(WASM_FALLBACK);
     });
 
@@ -500,6 +502,6 @@
   ready.then(function () {
     window.__SHIELD__.isReady = true;
   }).catch(function (e) {
-    console.error("[Drag+] Shield init failed", e);
+    console.error("[HELLZ] Shield init failed", e);
   });
 })();

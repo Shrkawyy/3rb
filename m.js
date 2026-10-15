@@ -37,7 +37,7 @@
       oy[c] = kw;
     }
   });
-  antiDebugCall();
+  /* Keep diagnostic logging available. */
   class Storage {
     static ["init"]() {
       this.prefix = "MX-";
@@ -178,7 +178,7 @@
     MXSkin_noAcc: "Account does not exist.",
   };
   const langLB = {
-    title: "Drag+",
+    title: "HELLZ",
   };
   const langHUD = {
     enterChatMsg: "Enter chat message...",
@@ -543,7 +543,7 @@
     static ["saveSettings"](mb, fz) {
       this[mb] = fz;
       if ("multiboxMode" === mb) {
-        Notifications.alert("Drag+", "Please rejoin the server!");
+        Notifications.alert("HELLZ", "Please rejoin the server!");
       }
       if ("chatType" === mb) {
         this.toggleChatroom();
@@ -759,7 +759,7 @@
     static ["setNick"](jl) {
       if (Player.isAlive) {
         $("#nick").val(Player.nick);
-        Notifications.alert("Drag+", Language.current.notif.nickChangeInGame);
+        Notifications.alert("HELLZ", Language.current.notif.nickChangeInGame);
       }
       let ht = Storage.get("profiles", "profile" + this.selected);
       const o = {
@@ -1497,7 +1497,7 @@
       ChatInput.enter(qk);
     }
     static ["command"](xz) {
-      let mc = 9 === xz ? "Drag+ by darkness" : Commands["command" + xz];
+      let mc = 9 === xz ? "HELLZ by S" : Commands["command" + xz];
       if (0 <= mc.indexOf("%sector%")) {
         const uv = WorldData.getLocation(Camera.x, Camera.y);
         mc = mc.replace("%sector%", uv);
@@ -1633,7 +1633,7 @@
           this.restartTimes[fq] = lp ? Date.parse(lp) : null;
         });
       } catch (zi) {
-        Notifications.warn("Drag+", "Unexpected error occured while parsing servers info.");
+        Notifications.warn("HELLZ", "Unexpected error occured while parsing servers info.");
         throw zi;
       }
       return [abp, aco];
@@ -2416,7 +2416,7 @@
     static ["shouldShow"](prefix, msg, src) {
       if ("game" === src) return true;
       if ("Level" === prefix) return true;
-      if ("Drag+" === prefix && ("by darkness" === msg || /^Tab [12] connected$/.test(msg))) return true;
+      if ("HELLZ" === prefix && ("by S" === msg || /^Tab [12] connected$/.test(msg))) return true;
       return false;
     }
     static ["normal"](gz, ady, xo = "system") {
@@ -2515,7 +2515,7 @@
         });
       }
       if (/welcome to 3rb\.io/i.test(zf)) {
-        this.alert("Drag+", "by darkness", "system", "drag-signature");
+        this.alert("HELLZ", "by S", "system", "hellz-signature");
       }
     }
     static ["partyInvite"](dg, zf, ais) {
@@ -3808,7 +3808,7 @@
       
       return "XXXXXXX" !== acy
         ? ((this.isRGB = pj), (this._skin = acy))
-        : void Notifications.alert("Drag+", Language.current.notif.invalidSkinUrl);
+        : void Notifications.alert("HELLZ", Language.current.notif.invalidSkinUrl);
     }
     static get ["skin"]() {
       return this._skin;
@@ -3820,7 +3820,7 @@
       
       if ("XXXXXXX" === acy) {
         if (dn) {
-          return void Notifications.alert("Drag+", Language.current.notif.invalidSkinUrl);
+          return void Notifications.alert("HELLZ", Language.current.notif.invalidSkinUrl);
         }
         this._skin2 = "";
       } else {
@@ -4814,7 +4814,7 @@
       });
       if (acl) {
         if (acl.isUnnamed) {
-          Notifications.alert("Drag+", Language.current.notif.target_unnamed);
+          Notifications.alert("HELLZ", Language.current.notif.target_unnamed);
         } else {
           const ou = this[1 === us ? "target1" : "target2"];
           ou.turnedOn = true;
@@ -4946,7 +4946,7 @@
           break;
         }
       }
-      yb += new TextDecoder().decode(new Uint8Array(this.dataView.buffer, this.index, yx));
+      yb += new TextDecoder().decode(new Uint8Array(this.dataView.buffer, this.dataView.byteOffset + this.index, yx));
       this.index += yx + 1;
       return yb;
     }
@@ -5005,7 +5005,7 @@
       this._shieldQueue = {};
       this.registerKeyBindings();
       this.startConnectionStatus();
-      window.DRAG_PLUS = {
+      window.HELLZ_CONTROL = {
         status: () => this.statusSnapshot(),
         kill: () => this.recycleActiveCell(),
         accounts: () => Account.slots(),
@@ -5057,7 +5057,7 @@
           try {
             session = new sh.ShieldSession(sh.shield_build_id());
           } catch (e) {
-            console.log("[Drag+] shield session error (tab " + slot + ")", e);
+            console.log("[HELLZ] shield session error (tab " + slot + ")", e);
             return;
           }
           entry.session = session;
@@ -5065,16 +5065,16 @@
           try {
             hello = session.hello();
           } catch (e) {
-            console.log("[Drag+] shield hello error (tab " + slot + ")", e);
+            console.log("[HELLZ] shield hello error (tab " + slot + ")", e);
             return;
           }
           const socket = 1 === slot ? this.ws : 2 === slot ? this.ws2 : this.ws3;
           if (socket && socket.readyState === socket.OPEN) {
             socket.send(hello);
-            console.log("[Drag+] shield hello sent (tab " + slot + ") len=" + hello.length);
+            console.log("[HELLZ] shield hello sent (tab " + slot + ") len=" + hello.length);
           }
         })
-        .catch((e) => console.log("[Drag+] shield hello failed (tab " + slot + ")", e));
+        .catch((e) => console.log("[HELLZ] shield hello failed (tab " + slot + ")", e));
     }
     static ["flushShieldQueue"](slot) {
       const q = (this._shieldQueue && this._shieldQueue[slot]) || [];
@@ -5106,7 +5106,7 @@
         try {
           entry.session.onHelloAck(raw, "");
         } catch (e) {
-          console.log("[Drag+] shield onHelloAck error (tab " + slot + ")", e);
+          console.log("[HELLZ] shield onHelloAck error (tab " + slot + ")", e);
           return true;
         }
         entry.established = true;
@@ -5116,7 +5116,7 @@
           this.flushProtoQueue(slot);
         }
         this.flushShieldQueue(slot);
-        console.log("[Drag+] shield established (tab " + slot + ")");
+        console.log("[HELLZ] shield established (tab " + slot + ")");
         if (1 === slot) {
           this.tab1Authed = true;
           this.queueTab2();
@@ -5129,7 +5129,7 @@
         try {
           inner = entry.session.open(raw);
         } catch (e) {
-          console.log("[Drag+] shield open error (tab " + slot + ")", e);
+          console.log("[HELLZ] shield open error (tab " + slot + ")", e);
           return true;
         }
         if (inner && inner.length > 1 && 212 === inner[0]) {
@@ -5138,9 +5138,9 @@
             const sh = window.__SHIELD__;
             const attest = sh.shield_attest(() => 0, inner.subarray(1));
             this.send(attest, slot);
-            console.log("[Drag+] shield attestation answered (tab " + slot + ")");
+            console.log("[HELLZ] shield attestation answered (tab " + slot + ")");
           } catch (e) {
-            console.log("[Drag+] shield attest error (tab " + slot + ")", e);
+            console.log("[HELLZ] shield attest error (tab " + slot + ")", e);
           }
           return true;
         }
@@ -5171,17 +5171,22 @@
       return task;
     }
     static ["loadTurnstileScript"]() {
+      if (window.turnstile && window.turnstile.render) return;
       if (document.querySelector('script[src*="challenges.cloudflare.com/turnstile"]')) return;
       const s = document.createElement("script");
       s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
       s.async = true;
       s.defer = true;
+      s.onerror = () => s.remove();
       (document.head || document.documentElement).appendChild(s);
     }
     static async ["_getToken"](alq) {
-      return new Promise((lv, dq) => {
+      return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => dq(new Error("Verification timed out; retry from the loading screen.")), 60000);
+        const lv = value => { clearTimeout(timer); resolve(value); };
+        const dq = error => { clearTimeout(timer); reject(error); };
         if (alq <= 1) {
-          Notifications.warn("Drag+", "Solving captcha, please wait..");
+          Notifications.warn("HELLZ", "Solving captcha, please wait..");
         }
         
         this.pendingResolvers[alq] = { resolve: lv, reject: dq };
@@ -5196,6 +5201,11 @@
           const container = document.querySelector(mu);
           if (!container) {
             return dq(new Error("Turnstile container not found: " + mu));
+          }
+          const previousWidget = this.widgetIds[alq];
+          if (previousWidget !== undefined && window.turnstile?.remove) {
+            try { window.turnstile.remove(previousWidget); } catch (e) {}
+            delete this.widgetIds[alq];
           }
           container.innerHTML = "";
           container.style.visibility = "visible";
@@ -5212,16 +5222,14 @@
               callback: (xs) => {
                 const rz = this.pendingResolvers[alq];
                 if (!xs) {
-                  return Notifications.warn("Drag+", "Unexpected response from Turnstile API.");
+                  return Notifications.warn("HELLZ", "Unexpected response from Turnstile API.");
                 }
                 const ls = document.getElementById("loading-screen");
                 if (ls) {
-                  $(ls).fadeOut(500, function () {
-                    $(this).remove();
-                  });
+                  window.HELLZLoading?.set(92, "Verification complete");
                 }
                 PacketSender.handleDisabledProperty(false);
-                Notifications.warn("Drag+", "Captcha solved for Tab " + alq);
+                Notifications.warn("HELLZ", "Captcha solved for Tab " + alq);
                 if (rz) {
                   return rz.resolve(xs);
                 }
@@ -5242,7 +5250,7 @@
             this.widgetIds[alq] = wid;
             window.turnstile.execute(wid);
           } catch (e) {
-            console.log("[Drag+] Turnstile render error:", e);
+            console.log("[HELLZ] Turnstile render error:", e); dq(e);
           }
         };
         this.loadTurnstileScript();
@@ -5262,7 +5270,7 @@
     }
     static ["connect"](hy, aff) {
       if ("string" != typeof hy) {
-        return Notifications.warn("Drag+", "Server IP is invalid");
+        return Notifications.warn("HELLZ", "Server IP is invalid");
       }
       if (!hy) return;
       const go = () => {
@@ -5310,7 +5318,7 @@
         if (!Account.loginStringFor(1)) {
           if (!this.tab2WarnedGuest) {
             this.tab2WarnedGuest = true;
-            Notifications.warn("Drag+", "3rb.io now blocks two guest tabs from the same IP. Log in with an account to enable Tab 2.");
+            Notifications.warn("HELLZ", "3rb.io now blocks two guest tabs from the same IP. Log in with an account to enable Tab 2.");
           }
           setTimeout(attempt, 3000);
           return;
@@ -5328,7 +5336,7 @@
       this.tab2Queued = false;
       if (this.intentionalDisconnect || !this.ip) return;
       if (!Account.loginStringFor(2) && 3 <= (this.tab2GuestKicks || 0)) {
-        Notifications.warn("Drag+", "Tab 2 keeps getting kicked as guest - log in with a second account to keep Tab 2 alive.");
+        Notifications.warn("HELLZ", "Tab 2 keeps getting kicked as guest - log in with a second account to keep Tab 2 alive.");
         return;
       }
       this.queueTab2();
@@ -5452,7 +5460,7 @@
         try {
           payload = entry.session.seal(new Uint8Array(payload));
         } catch (e) {
-          console.log("[Drag+] shield seal error (tab " + yj + ")", e);
+          console.log("[HELLZ] shield seal error (tab " + yj + ")", e);
         }
       }
       if (1 === yj && this.wsOpen) {
@@ -5468,7 +5476,7 @@
       
       this.shieldHello(nq);
       PacketSender.init(nq);
-      if (3 !== nq) Notifications.alert("Drag+", "Tab " + nq + " connected");
+      if (3 !== nq) Notifications.alert("HELLZ", "Tab " + nq + " connected");
     }
     static ["onMessage"](alh, adu) {
 this.packetCount["in"]++;
@@ -5476,7 +5484,7 @@ this.packetCount["in"]++;
         try {
           const o = JSON.parse(alh.data);
           if (o && "ban_ui" === o.type) {
-            console.log("[Drag+] ban_ui received");
+            console.log("[HELLZ] ban_ui received");
           }
         } catch (e) {}
         return;
@@ -5552,7 +5560,7 @@ this.packetCount["in"]++;
       if (numericTab !== 1 && numericTab !== 2) return false;
       const reason = ev && ev.reason ? String(ev.reason) : "";
       if (/new connection/i.test(reason)) {
-        Notifications.warn("Drag+", "Tab " + numericTab + " was replaced by another connection from this IP (new 3rb.io rule)");
+        Notifications.warn("HELLZ", "Tab " + numericTab + " was replaced by another connection from this IP (new 3rb.io rule)");
         if (2 === numericTab) {
           this.tab2GuestKicks = (this.tab2GuestKicks || 0) + 1;
         }
@@ -5567,7 +5575,7 @@ this.packetCount["in"]++;
       }
       this.resetShield(numericTab);
       PacketParser.clearCells(numericTab);
-      Notifications.alert("Drag+", "Tab " + numericTab + " disconnected");
+      Notifications.alert("HELLZ", "Tab " + numericTab + " disconnected");
       console.log("Websocket " + numericTab + " closed" + (reason ? " (" + reason + ")" : ""));
       if (1 === numericTab) {
         setTimeout(() => {
@@ -5640,7 +5648,7 @@ this.packetCount["in"]++;
       const tab = Number(Player.typeID || 1);
       const alive = tab === 2 ? Player._isAlive2 : Player._isAlive;
       if (!alive) {
-        Notifications.warn("Drag+", "Tab " + tab + " is not alive.");
+        Notifications.warn("HELLZ", "Tab " + tab + " is not alive.");
         return false;
       }
       if (this.recycleLocks.has(tab)) return false;
@@ -5665,12 +5673,12 @@ this.packetCount["in"]++;
     }
     static ["connectionStatus"]() {
       const status = this.statusSnapshot();
-      let hud = document.getElementById("drag-plus-connection-status");
+      let hud = document.getElementById("hellz-connection-status");
       if (!hud && document.body) {
         hud = document.createElement("div");
-        hud.id = "drag-plus-connection-status";
+        hud.id = "hellz-connection-status";
         hud.style.cssText = "position:fixed;right:5px;z-index:2147483000;text-align:center;font-family:ubuntu,sans-serif;font-size:11px;color:rgba(255,255,255,.75);pointer-events:none;white-space:nowrap;text-shadow:0 1px 2px #000;padding-bottom:3px";
-        hud.title = "Drag+ Multibox - Tab 1 and Tab 2 connection status.";
+        hud.title = "HELLZ Multibox - Tab 1 and Tab 2 connection status.";
         document.body.appendChild(hud);
       }
       if (hud) {
@@ -5716,7 +5724,7 @@ this.packetCount["in"]++;
         const ajb = this.messages.get(gf);
         if ((ajb == dm && dm.length >= 30) || (ajb.length >= 30 && dm.length >= 30)) {
           this.spammers.push(gf);
-          Notifications.alert("Drag+", "Spammer Catched -> " + gf);
+          Notifications.alert("HELLZ", "Spammer Catched -> " + gf);
           return true;
         }
       } else if (dm.length >= 30) {
@@ -6181,7 +6189,6 @@ this.packetCount["in"]++;
       
       
       const str = 1 === Number(ahn) ? Account.loginStringFor(1) : Account.loginStringFor(2);
-      console.log("Drag+ Login packet (tab " + ahn + "): " + (str ? (str.length > 24 ? str.slice(0, 24) + "..." : str) : "guest"));
       if (!str) {
         const px = new Uint8Array([255, 0, 0]);
         WsConnection.send(px, ahn);
@@ -6212,7 +6219,7 @@ this.packetCount["in"]++;
         add = await WsConnection.getToken(oq);
       } catch (nb) {
         console.log("Multibox: failed to get captcha token for tab " + oq + ":", nb);
-        Notifications.warn("Drag+", "Captcha failed for Tab " + oq + " - retrying the connection.");
+        Notifications.warn("HELLZ", "Captcha failed for Tab " + oq + " - retrying the connection.");
         return false;
       }
       var fj = new DataView(new ArrayBuffer(add.length + 6));
@@ -6557,7 +6564,7 @@ this.packetCount["in"]++;
           const tk = d && (d.token || (d.data && d.data.token));
           if (!tk) {
             this._slotFetchFail[slot] = (this._slotFetchFail[slot] || 0) + 1;
-            Notifications.warn("Login", "Game token failed for account slot " + slot + (3 === this._slotFetchFail[slot] ? " - the saved account token looks expired, please login again or use DRAG_PLUS.clearAccounts()" : ""));
+            Notifications.warn("Login", "Game token failed for account slot " + slot + (3 === this._slotFetchFail[slot] ? " - the saved account token looks expired, please login again or use HELLZ_CONTROL.clearAccounts()" : ""));
             return;
           }
           this._slotFetchFail[slot] = 0;
@@ -7477,10 +7484,9 @@ this.packetCount["in"]++;
       this.time = Date.now();
     }
   }
+  window.HELLZGame = { WsConnection, PacketSender, Player, Mouse, CellData, DataReader };
   window.onload = () => (
-    $("#loading-screen").html(
-      '<div class="ls-title">Drag+</div><div class="ls-subtitle">by darkness</div><div class="ls-spinner"><span id="ls-icon"><i class="fa fa-solid fa-circle-notch fa-spin"></i></span><span style="display:block;" id="ls-message">Loading...</span></div>',
-    ),
+    window.HELLZLoading?.mount(),
     49 > GameLoop.browserVersion()
       ? ($("#ls-icon").html('<i class="fa fa-chrome" aria-hidden="true"></i>'),
         void $("#ls-message").text(" Only Chrome version 49 or higher are supported."))
