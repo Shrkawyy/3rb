@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HELLZ — by S
 // @namespace    hellz-3rb
-// @version      2.0.0
+// @version      2.1.0
 // @author       HELLZ
 // @match        *://3rb.io/*
 // @match        *://www.3rb.io/*
@@ -31,12 +31,12 @@
       new Function('GM_xmlhttpRequest','GM_getValue','GM_setValue','unsafeWindow',code)(GM_xmlhttpRequest,GM_getValue,GM_setValue,unsafeWindow);
     } catch(error) { fail(error.message); }
   };
-  const key='hellz-launcher-2.0.0';
+  const key='hellz-launcher-2.1.0';
   const cached=GM_getValue(key,null);
   if(cached && Date.now()-cached.saved<300000){launch(cached.code);return;}
   GM_xmlhttpRequest({
     method:'GET',
-    url:'https://3rbio-sigma.vercel.app/launcher.js?release=2.0.0',
+    url:'https://3rbio-sigma.vercel.app/launcher.js?release=2.1.0',
     timeout:20000,
     onload(r){
       if(r.status!==200 || /^\s*</.test(r.responseText||'')){

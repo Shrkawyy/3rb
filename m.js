@@ -4999,6 +4999,7 @@
       this.tab1Authed = false;
       this.tab2Queued = false;
       this.tab2GuestKicks = 0;
+      this.policyBlocked = false;
       this.tab2Gen = (this.tab2Gen || 0) + 1;
       
       this._shield = {};
@@ -5281,6 +5282,7 @@
         this.tab1Authed = false;
         this.tab2Queued = false;
         this.tab2GuestKicks = 0;
+      this.policyBlocked = false;
         this.tab2Gen = (this.tab2Gen || 0) + 1;
         this.createSocket(1);
         console.log("Connecting to: " + hy + " (Tab 1 first, Tab 2 follows after Tab 1 auth)");
@@ -5301,12 +5303,12 @@
       
       
       
-      if (this.tab2Queued || this.ws2) return;
+      if (this.tab2Queued || this.ws2 || this.policyBlocked) return;
       this.tab2Queued = true;
       this.tab2WarnedGuest = false;
       const gen = this.tab2Gen;
       const attempt = () => {
-        if (this.tab2Gen !== gen || this.intentionalDisconnect || !this.ip) {
+        if (this.tab2Gen !== gen || this.intentionalDisconnect || !this.ip || this.policyBlocked) {
           if (this.tab2Gen === gen) this.tab2Queued = false;
           return;
         }
@@ -5315,12 +5317,12 @@
           setTimeout(attempt, 600);
           return;
         }
-        if (!Account.loginStringFor(1)) {
+        if (!Account.loginStringFor(1) || !Account.loginStringFor(2)) {
           if (!this.tab2WarnedGuest) {
             this.tab2WarnedGuest = true;
-            Notifications.warn("HELLZ", "3rb.io now blocks two guest tabs from the same IP. Log in with an account to enable Tab 2.");
+            Notifications.warn("HELLZ", "Tab 2 paused: a separate authenticated account is required. Tab 1 remains active.");
           }
-          setTimeout(attempt, 3000);
+          this.tab2Queued = false;
           return;
         }
         if (!Account.gameToken1) {
@@ -5334,7 +5336,7 @@
     }
     static ["retryTab2Later"]() {
       this.tab2Queued = false;
-      if (this.intentionalDisconnect || !this.ip) return;
+      if (this.intentionalDisconnect || !this.ip || this.policyBlocked) return;
       if (!Account.loginStringFor(2) && 3 <= (this.tab2GuestKicks || 0)) {
         Notifications.warn("HELLZ", "Tab 2 keeps getting kicked as guest - log in with a second account to keep Tab 2 alive.");
         return;
@@ -5559,11 +5561,12 @@ this.packetCount["in"]++;
       if (this.intentionalDisconnect) return false;
       if (numericTab !== 1 && numericTab !== 2) return false;
       const reason = ev && ev.reason ? String(ev.reason) : "";
-      if (/new connection/i.test(reason)) {
-        Notifications.warn("HELLZ", "Tab " + numericTab + " was replaced by another connection from this IP (new 3rb.io rule)");
-        if (2 === numericTab) {
-          this.tab2GuestKicks = (this.tab2GuestKicks || 0) + 1;
-        }
+      const replaced = /new connection from this browser|new connection/i.test(reason);
+      if (replaced) {
+        this.policyBlocked = true;
+        this.tab2Gen = (this.tab2Gen || 0) + 1;
+        this.tab2Queued = false;
+        Notifications.warn("HELLZ", "Server replaced Tab " + numericTab + ". Automatic reconnection paused to prevent a disconnect loop. Close duplicate tabs/bots and reconnect manually.");
       }
       if (numericTab === 1) {
         this.ws = null;
@@ -5577,13 +5580,15 @@ this.packetCount["in"]++;
       PacketParser.clearCells(numericTab);
       Notifications.alert("HELLZ", "Tab " + numericTab + " disconnected");
       console.log("Websocket " + numericTab + " closed" + (reason ? " (" + reason + ")" : ""));
-      if (1 === numericTab) {
+      if (!replaced && !this.policyBlocked && 1 === numericTab) {
         setTimeout(() => {
-          if (this.intentionalDisconnect || !this.ip || this.ws) return;
+          if (this.intentionalDisconnect || !this.ip || this.ws || this.policyBlocked) return;
           this.createSocket(1);
-        }, 1000);
-      } else {
-        this.retryTab2Later();
+        }, 3500);
+      } else if (!replaced && !this.policyBlocked && 2 === numericTab) {
+        // Do not repeatedly attempt a secondary connection after a server rejection.
+        this.tab2Queued = false;
+        Notifications.warn("HELLZ", "Tab 2 disconnected. Reconnect it manually after checking server/account limits.");
       }
       if (!(this.wsOpen || this.ws2Open)) {
         MainMenu.open();

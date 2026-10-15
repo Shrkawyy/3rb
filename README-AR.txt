@@ -1,3 +1,11 @@
+HELLZ by S v2.1.0 - Connection loop mitigation
+- Stop automatic reconnect on server rejection: New connection from this browser.
+- Do not repeatedly retry rejected Tab 2 connections.
+- Require both authenticated account slots before auto-starting Tab 2; otherwise leave Tab 1 alone.
+- Reconnect manually after closing competing windows/bots and confirming server policy.
+- Does not bypass or guarantee server connection limits.
+- Upload all files and replace Tampermonkey script to invalidate previous cache.
+
 HELLZ — by S | الإصدار 2.0.0
 
 التركيب:
